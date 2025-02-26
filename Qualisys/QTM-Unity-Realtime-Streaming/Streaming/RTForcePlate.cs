@@ -105,7 +105,7 @@ namespace QualisysRealTime.Unity
                         forcePlateThickness
                     );
 
-                    destTransform.position = transform.TransformVector(src.ExtractPosition()) - destTransform.forward * (forcePlateThickness / 2.0f);
+                    destTransform.position = transform.TransformVector(src.ExtractPosition()) - destTransform.forward * (forcePlateThickness / 2.0f) + this.transform.position;
                 }
             }
             
@@ -139,29 +139,29 @@ namespace QualisysRealTime.Unity
                 Vector3 forward = transform.TransformDirection(forceVectorCached.Transform.MultiplyPoint(Vector3.forward));
 
                 Gizmos.color = Color.green;
-                Gizmos.DrawLine(zero, up);
+                Gizmos.DrawLine(zero + this.transform.position, up + this.transform.position);
                 Gizmos.color = Color.red;
-                Gizmos.DrawLine(zero, right);
+                Gizmos.DrawLine(zero + this.transform.position, right + this.transform.position);
                 Gizmos.color = Color.blue;
-                Gizmos.DrawLine(zero, forward);
+                Gizmos.DrawLine(zero + this.transform.position, forward + this.transform.position);
 
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawLine(transform.TransformVector(forceVectorCached.ApplicationPoint), transform.TransformVector(forceVectorCached.ApplicationPoint) + transform.TransformVector(VisualDownscaleForce(forceVectorCached.Force)));
-                Gizmos.DrawSphere(transform.TransformVector(forceVectorCached.ApplicationPoint), 0.01f);
+                Gizmos.DrawLine(transform.TransformVector(forceVectorCached.ApplicationPoint) + this.transform.position, transform.TransformVector(forceVectorCached.ApplicationPoint) + transform.TransformVector(VisualDownscaleForce(forceVectorCached.Force)) + this.transform.position);
+                Gizmos.DrawSphere(transform.TransformVector(forceVectorCached.ApplicationPoint) + this.transform.position, 0.01f);
                 
                 Gizmos.color = Color.red;
-                Gizmos.DrawLine(transform.TransformVector(forceVectorCached.Corners[0]),transform.TransformVector(forceVectorCached.Corners[1]));
-                Gizmos.DrawLine(transform.TransformVector(forceVectorCached.Corners[1]),transform.TransformVector(forceVectorCached.Corners[2]));
-                Gizmos.DrawLine(transform.TransformVector(forceVectorCached.Corners[2]),transform.TransformVector(forceVectorCached.Corners[3]));
-                Gizmos.DrawLine(transform.TransformVector(forceVectorCached.Corners[3]), transform.TransformVector(forceVectorCached.Corners[0]));
+                Gizmos.DrawLine(transform.TransformVector(forceVectorCached.Corners[0]) + this.transform.position, transform.TransformVector(forceVectorCached.Corners[1]) + this.transform.position);
+                Gizmos.DrawLine(transform.TransformVector(forceVectorCached.Corners[1]) + this.transform.position,transform.TransformVector(forceVectorCached.Corners[2]) + this.transform.position);
+                Gizmos.DrawLine(transform.TransformVector(forceVectorCached.Corners[2]) + this.transform.position,transform.TransformVector(forceVectorCached.Corners[3]) + this.transform.position);
+                Gizmos.DrawLine(transform.TransformVector(forceVectorCached.Corners[3]) + this.transform.position, transform.TransformVector(forceVectorCached.Corners[0]) + this.transform.position);
 
                 int i = 1;
                 foreach( var corner in forceVectorCached.Corners )
                 { 
                     #if UNITY_EDITOR
-                    UnityEditor.Handles.Label(transform.TransformVector(corner), (i++).ToString() );
+                    UnityEditor.Handles.Label(transform.TransformVector(corner) + this.transform.position, (i++).ToString() );
                     #endif
-                    Gizmos.DrawSphere(transform.TransformVector(corner), 0.01f );
+                    Gizmos.DrawSphere(transform.TransformVector(corner) + this.transform.position, 0.01f );
                 }
 
             }
