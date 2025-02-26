@@ -47,7 +47,7 @@ namespace QualisysRealTime.Unity
                 lineRenderer.transform.localPosition = Vector3.zero;
                 lineRenderer.material = material;
                 lineRenderer.material.color = boneData[i].Color;
-                lineRenderer.useWorldSpace = false;
+                lineRenderer.useWorldSpace = true;
                 bones.Add(lineRenderer);
             }
         }
@@ -74,8 +74,8 @@ namespace QualisysRealTime.Unity
                 if (!float.IsNaN(boneData[i].FromMarker.Position.sqrMagnitude) &&
                     !float.IsNaN(boneData[i].ToMarker.Position.sqrMagnitude))
                 {
-                    bones[i].SetPosition(0, boneData[i].FromMarker.Position);
-                    bones[i].SetPosition(1, boneData[i].ToMarker.Position);
+                    bones[i].SetPosition(0, transform.TransformVector(boneData[i].FromMarker.Position) + this.transform.position);
+                    bones[i].SetPosition(1, transform.TransformVector(boneData[i].ToMarker.Position) + this.transform.position);
                     bones[i].startWidth = boneScale;
                     bones[i].endWidth = boneScale;
 
