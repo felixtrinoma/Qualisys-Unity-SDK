@@ -75,6 +75,7 @@ namespace QualisysRealTime.Unity
                 lineRenderer.SetPosition (1, Vector3.Lerp(startPosition,  endPosition, 0.999f - breakpoint));
                 lineRenderer.SetPosition (2, Vector3.Lerp (startPosition,  endPosition, 1 - breakpoint));
                 lineRenderer.SetPosition (3,  endPosition);
+                lineRenderer.useWorldSpace = false;
                 lineRenderer.widthCurve = new AnimationCurve (
                         new Keyframe (0, stemWidth),
                         new Keyframe (0.999f - breakpoint, stemWidth),
@@ -104,7 +105,7 @@ namespace QualisysRealTime.Unity
                         forcePlateThickness
                     );
 
-                    destTransform.position = src.ExtractPosition() - destTransform.forward * (forcePlateThickness / 2.0f);
+                    destTransform.position = transform.TransformVector(src.ExtractPosition()) - destTransform.forward * (forcePlateThickness / 2.0f);
                 }
             }
             
@@ -130,12 +131,13 @@ namespace QualisysRealTime.Unity
         private void OnDrawGizmos()
         {
             if(forceVectorCached != null)
-            { 
-                Vector3 zero = forceVectorCached.Transform.MultiplyPoint(Vector3.zero);
-                Vector3 right = forceVectorCached.Transform.MultiplyPoint(Vector3.right);
-                Vector3 up = forceVectorCached.Transform.MultiplyPoint(Vector3.up);
-                Vector3 forward = forceVectorCached.Transform.MultiplyPoint(Vector3.forward);
-                
+            {
+
+                Vector3 zero = transform.TransformDirection(forceVectorCached.Transform.MultiplyPoint(Vector3.zero));
+                Vector3 right = transform.TransformDirection(forceVectorCached.Transform.MultiplyPoint(Vector3.right));
+                Vector3 up = transform.TransformDirection(forceVectorCached.Transform.MultiplyPoint(Vector3.up));
+                Vector3 forward = transform.TransformDirection(forceVectorCached.Transform.MultiplyPoint(Vector3.forward));
+
                 Gizmos.color = Color.green;
                 Gizmos.DrawLine(zero, up);
                 Gizmos.color = Color.red;
@@ -144,22 +146,22 @@ namespace QualisysRealTime.Unity
                 Gizmos.DrawLine(zero, forward);
 
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawLine(forceVectorCached.ApplicationPoint, forceVectorCached.ApplicationPoint + VisualDownscaleForce(forceVectorCached.Force));
-                Gizmos.DrawSphere(forceVectorCached.ApplicationPoint, 0.01f);
+                Gizmos.DrawLine(transform.TransformVector(forceVectorCached.ApplicationPoint), transform.TransformVector(forceVectorCached.ApplicationPoint) + transform.TransformVector(VisualDownscaleForce(forceVectorCached.Force)));
+                Gizmos.DrawSphere(transform.TransformVector(forceVectorCached.ApplicationPoint), 0.01f);
                 
                 Gizmos.color = Color.red;
-                Gizmos.DrawLine(forceVectorCached.Corners[0],forceVectorCached.Corners[1]);
-                Gizmos.DrawLine(forceVectorCached.Corners[1],forceVectorCached.Corners[2]);
-                Gizmos.DrawLine(forceVectorCached.Corners[2],forceVectorCached.Corners[3]);
-                Gizmos.DrawLine(forceVectorCached.Corners[3],forceVectorCached.Corners[0]);
+                Gizmos.DrawLine(transform.TransformVector(forceVectorCached.Corners[0]),transform.TransformVector(forceVectorCached.Corners[1]));
+                Gizmos.DrawLine(transform.TransformVector(forceVectorCached.Corners[1]),transform.TransformVector(forceVectorCached.Corners[2]));
+                Gizmos.DrawLine(transform.TransformVector(forceVectorCached.Corners[2]),transform.TransformVector(forceVectorCached.Corners[3]));
+                Gizmos.DrawLine(transform.TransformVector(forceVectorCached.Corners[3]), transform.TransformVector(forceVectorCached.Corners[0]));
 
                 int i = 1;
                 foreach( var corner in forceVectorCached.Corners )
                 { 
                     #if UNITY_EDITOR
-                    UnityEditor.Handles.Label( corner, (i++).ToString() );
+                    UnityEditor.Handles.Label(transform.TransformVector(corner), (i++).ToString() );
                     #endif
-                    Gizmos.DrawSphere( corner, 0.01f );
+                    Gizmos.DrawSphere(transform.TransformVector(corner), 0.01f );
                 }
 
             }
